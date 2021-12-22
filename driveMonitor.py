@@ -4,6 +4,9 @@ import time
 import subprocess
 from subprocess import Popen, PIPE
 
+passwordFile = "/root/containerPassword.txt"
+containerFile = "/mnt/sda1/container.bin"
+
 class DriveState(Enum):
     NO_USB_DRIVE = 1
     USB_DRIVE_MOUNTED = 2
@@ -12,40 +15,53 @@ class DriveState(Enum):
     CONTAINER_ERROR = 5
     NO_CONTAINER_PASSWORD = 6
 
-def main():
+def checkDriveState(driveStateParam):
 
-    passwordFile = "/root/containerPassword.txt"
-    containerFile = "/mnt/sda1/container.bin"
+    if not os.path.isfile(passwordFile):
+        return DriveState.NO_CONTAINER_PASSWORD
+
+    sdaCheckResult = subprocess.run(['ls', '/dev'], stdout=subprocess.PIPE, universal_newlines=True)
+
+    if not "sda1" in sdaCheckResult.stdout:
+        if driveStateParam != DriveState.NO_USB_DRIVE:
+            # got unplugged...
+            # just do a reboot for now?
+            # needed because dev mapper will allow it to continue to be written too even
+            # though the disk is gone
+            subprocess.run(['reboot'])
+        return DriveState.NO_USB_DRIVE
+    elif driveStateParam == DriveState.NO_USB_DRIVE:
+        driveStateParam = DriveState.USB_DRIVE_MOUNTED
+
+    if driveStateParam == DriveState.USB_DRIVE_MOUNTED and not os.path.isfile(containerFile):
+        return DriveState.NO_CONTAINER
+
+    if driveStateParam == DriveState.USB_DRIVE_MOUNTED and os.path.isfile(containerFile):
+        #get the password
+        containerPassword = ""
+        with open(passwordFile) as passwordFileHandle:
+            containerPassword = passwordFileHandle.readline().rstrip()
+
+        #attempt to mount the container
+        process = subprocess.run("mkdir /tmp/container", shell=True)
+
+        process = Popen(["cryptsetup", "luksOpen", containerFile, "container"], stdin=PIPE)
+        process.communicate((containerPassword + "\n").encode("ascii"))
+        process.wait()
+
+        process = subprocess.run("mount /dev/mapper/container /tmp/container/", shell=True)
+
+        driveStateParam = DriveState.CONTAINER_MOUNTED
+
+    return driveStateParam
+
+
+def main():
     currentDriveState = DriveState.NO_USB_DRIVE
 
     while True:
-        if not os.path.isfile(containerFile):
-            currentDriveState = DriveState.NO_CONTAINER
-        if not os.path.isfile(passwordFile):
-            currentDriveState = DriveState.NO_CONTAINER_PASSWORD
-        if currentDriveState == DriveState.NO_USB_DRIVE and os.path.isdir("/mnt/sda1"):
-            currentDriveState = DriveState.USB_DRIVE_MOUNTED
-        if currentDriveState == DriveState.USB_DRIVE_MOUNTED and not os.path.isfile(containerFile):
-            currentDriveState = DriveState.NO_CONTAINER
-        if currentDriveState == DriveState.USB_DRIVE_MOUNTED and os.path.isfile(containerFile):
-            #get the password
-            containerPassword = ""
-            with open(passwordFile) as passwordFileHandle:
-                containerPassword = passwordFileHandle.readline().rstrip()
 
-            #attempt to mount the container
-            process = subprocess.run("mkdir /tmp/container", shell=True)
-
-            process = Popen(["cryptsetup", "luksOpen", containerFile, "container"], stdin=PIPE)
-            process.communicate((containerPassword + "\n").encode("ascii"))
-            process.wait()
-
-            process = subprocess.run("mount /dev/mapper/container /tmp/container/", shell=True)
-
-            currentDriveState = DriveState.CONTAINER_MOUNTED
-
-        if currentDriveState != DriveState.NO_USB_DRIVE and not os.path.isdir("/mnt/sda1"):
-            currentDriveState = DriveState.NO_USB_DRIVE
+        currentDriveState = checkDriveState(currentDriveState)
 
         driveStatePath = '/tmp/driveState.txt'
         driveStateFile = open(driveStatePath, 'w')
