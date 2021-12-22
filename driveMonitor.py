@@ -8,7 +8,7 @@ class DriveState(Enum):
     NO_USB_DRIVE = 1
     USB_DRIVE_MOUNTED = 2
     NO_CONTAINER = 3
-    COUNTAINER_MOUNTED = 4
+    CONTAINER_MOUNTED = 4
     CONTAINER_ERROR = 5
     NO_CONTAINER_PASSWORD = 6
 
@@ -42,7 +42,7 @@ def main():
 
             process = subprocess.run("mount /dev/mapper/container /tmp/container/", shell=True)
 
-            currentDriveState = DriveState.COUNTAINER_MOUNTED
+            currentDriveState = DriveState.CONTAINER_MOUNTED
 
         if currentDriveState != DriveState.NO_USB_DRIVE and not os.path.isdir("/mnt/sda1"):
             currentDriveState = DriveState.NO_USB_DRIVE
