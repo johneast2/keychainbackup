@@ -20,6 +20,8 @@ def checkDriveState(driveStateParam):
     if not os.path.isfile(passwordFile):
         return DriveState.NO_CONTAINER_PASSWORD
 
+    sdaCheckResult = ''
+
     sdaCheckResult = subprocess.run(['ls', '/dev'], stdout=subprocess.PIPE, universal_newlines=True)
 
     if not "sda1" in sdaCheckResult.stdout:
