@@ -42,5 +42,7 @@ def main():
 
     #process = subprocess.run("cp /root/tempsetupfiles/rc.local /etc/rc.local", shell=True)
 
+    process = subprocess.run("rm -rf /root/tempsetupfiles", shell=True)
+
 if __name__ == "__main__":
     main()

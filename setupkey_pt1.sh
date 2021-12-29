@@ -14,5 +14,10 @@ umount /dev/sda1
 
 fdisk /dev/sda < /root/tempsetupfiles/fdisk.cmds
 
-reboot
+echo "finished part 1"
+
+# don't know why this doesn't need nohup
+reboot -d 5
+
+exit
 

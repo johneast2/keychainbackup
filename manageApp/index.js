@@ -195,7 +195,7 @@ function handleClientSetup() {
 			currentSetupState = SetupState.WaitingForReboot;
 			mainWindow.webContents.send('async-status','First setup script finished, rebooting omega...');
 			clientConnection.end();
-			setTimeout(handleClientSetup, 100);
+			setTimeout(handleClientSetup, 10000);
 		    }).on('data', (data) => {
 		      console.log('STDOUT: ' + data);
 		    }).stderr.on('data', (data) => {
@@ -213,8 +213,9 @@ function handleClientSetup() {
 			// run second shell script
 			clientConnection.exec('touch /root/containerPassword.txt && printf ' + encPassword + ' > /root/containerPassword.txt && python3 /root/tempsetupfiles/setupkey_pt2.py', (err, stream) => {
 			    if (err) {
-				console.log('SSH - Waiting for reboot: ' + err);
-			  	currentSetupState = SetupState.ConnectionError;
+				console.log('SSH - Connection Error: ' + err);
+		  		currentSetupState = SetupState.ConnectionError;
+				mainWindow.webContents.send('async-status','SSH connection error!');
 			    }
 			    stream.on('close', (code, signal) => {
 			      console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
@@ -230,8 +231,8 @@ function handleClientSetup() {
 		  });
 
 		clientConnection.on('error', function(err) {
-		  console.log('SSH - Connection Error: ' + err);
-		  mainWindow.webContents.send('async-status','SSH Connection Error!');
+		  console.log('SSH - Waiting for reboot: ' + err);
+		  // don't go to error state here, expect errors while waiting for omega to reboot
 		  setTimeout(handleClientSetup, 1000);
 		});
 
