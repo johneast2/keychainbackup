@@ -123,7 +123,52 @@ function handleClientSetup() {
 		  console.log('ssh Client is ready');
 			currentSetupState = SetupState.Connected;
 
-			mainWindow.webContents.send('async-status','Connected to Omega, uploading setup files...');
+			mainWindow.webContents.send('async-status','Connected to Omega, checking for usb drive...');
+
+			clientConnection.exec('dmesg | grep "sda] Atta"', (err, stream) => {
+			    if (err) {
+				console.log('SSH - Connection Error: ' + err);
+			  	currentSetupState = SetupState.ConnectionError;
+				mainWindow.webContents.send('async-status','SSH connection error!');
+			    }
+			    stream.on('close', (code, signal) => {
+			      console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
+				
+			    }).on('data', (data) => {
+			      console.log('STDOUT: ' + data);
+			      if (data.includes('[sda] Attached SCSI removable disk'))
+				{
+					currentSetupState = SetupState.Connected;
+					mainWindow.webContents.send('async-status','usb drive found, uploading setup files...');
+					setTimeout(handleClientSetup, 100);
+				}
+			       else 
+				{
+					console.log("usb drive not found trying again");
+					setTimeout(handleClientSetup, 5000);
+				}
+			    }).stderr.on('data', (data) => {
+			      console.log('STDERR: ' + data);
+			    });
+			  });
+
+		});
+
+		clientConnection.on('error', function(err) {
+		  console.log('SSH - Connection Error: ' + err);
+		  currentSetupState = SetupState.ConnectionError;
+		  mainWindow.webContents.send('async-status','SSH connection error!');
+		  setTimeout(handleClientSetup, 100);
+		});
+
+		clientConnection.connect({
+		  host: clientIpAddress,
+		  port: 22,
+		  username: 'root',
+		  password: 'onioneer'
+		});
+	}
+	if (currentSetupState === SetupState.Connected) {
 
 			clientConnection.sftp((err, sftp) => {
 			    if (err) throw err;
@@ -142,24 +187,7 @@ function handleClientSetup() {
 
 				setTimeout(handleClientSetup, 100);
 			  });
-
-
 			});
-		  });
-
-		clientConnection.on('error', function(err) {
-		  console.log('SSH - Connection Error: ' + err);
-		  currentSetupState = SetupState.ConnectionError;
-		  mainWindow.webContents.send('async-status','SSH connection error!');
-		  setTimeout(handleClientSetup, 100);
-		});
-
-		clientConnection.connect({
-		  host: clientIpAddress,
-		  port: 22,
-		  username: 'root',
-		  password: 'onioneer'
-		});
 	}
 	else if (currentSetupState === SetupState.UploadedZip)
 	{

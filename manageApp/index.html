@@ -26,6 +26,13 @@
 	</button>
         </div>
      </div>
+     <div id="confirmDelete">
+        <H1>!! WARNING !!</H1><br>
+        This setup process will delete all files on the usb drive.<br><br>
+        <button type="button" class="btn btn-warning" id="confirmSetupDeviceButton">
+	    I understand that all files will be erased!<br><br>Click here to continue with setup
+	</button>
+     </div>
      <div id="setupStatusDiv">
          <h1>Connecting to device...</h1>
      </div>
@@ -35,11 +42,19 @@
 
 document.addEventListener("DOMContentLoaded", function(){
 	$('#setupStatusDiv').hide();
+	$('#confirmDelete').hide();
 });
 
 const { ipcRenderer } = require('electron');
 
 $("#setupDeviceButton").on('click', () => {
+	$('#setupformDiv').hide();
+	$('#confirmDelete').show();
+
+
+});
+
+$("#confirmSetupDeviceButton").on('click', () => {
     var setupArgs = {};
     setupArgs["octetA"] = $("#octetA").val();
     setupArgs["octetB"] = $("#octetB").val();
@@ -47,6 +62,8 @@ $("#setupDeviceButton").on('click', () => {
     setupArgs["octetD"] = $("#octetD").val();
     setupArgs["sshPassword"] = $("#sshPassword").val();
     setupArgs["encPassword"] = $("#encPassword").val();
+
+    $('#confirmDelete').hide();
 
     var result = ipcRenderer.sendSync('setupDevice', setupArgs);
 
@@ -56,6 +73,7 @@ $("#setupDeviceButton").on('click', () => {
 		$('#ipAddressErrorMessage').css('background-color', 'OrangeRed');
 		$('#ipAddressErrorMessage').html("Invalid IP Address for device!");
 		$('#ipAddressErrorMessage').show();
+		$('#setupformDiv').show();
 	}
 	else 
 	{
@@ -66,10 +84,12 @@ $("#setupDeviceButton").on('click', () => {
 		$('#encryptedErrorMessage').css('background-color', 'OrangeRed');
 		$('#encryptedErrorMessage').html("Encrypted Container Password cannot be empty!");
 		$('#encryptedErrorMessage').show();
+                $('#setupformDiv').show();
 	}
 	else
 	{
 		$('#encryptedErrorMessage').hide();
+                $('#setupformDiv').hide();
 	}
 });
 
