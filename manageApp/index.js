@@ -124,6 +124,7 @@ function handleClientSetup() {
 			currentSetupState = SetupState.Connected;
 
 			mainWindow.webContents.send('async-status','Connected to Omega, checking for usb drive...');
+			mainWindow.webContents.send('async-progress', 10);
 
 			clientConnection.exec('dmesg | grep "sda] Atta"', (err, stream) => {
 			    if (err) {
@@ -140,6 +141,7 @@ function handleClientSetup() {
 				{
 					currentSetupState = SetupState.Connected;
 					mainWindow.webContents.send('async-status','usb drive found, uploading setup files...');
+					mainWindow.webContents.send('async-progress', 20);
 					setTimeout(handleClientSetup, 100);
 				}
 			       else 
@@ -183,6 +185,7 @@ function handleClientSetup() {
 				{
 					currentSetupState = SetupState.UploadedZip
 					mainWindow.webContents.send('async-status','Setup files uploaded, Extracting...');
+					mainWindow.webContents.send('async-progress', 30);
 				}
 
 				setTimeout(handleClientSetup, 100);
@@ -202,6 +205,7 @@ function handleClientSetup() {
 			currentSetupState = SetupState.ExtractedZip;
 			mainWindow.webContents.send('async-status','Setup files extracted, executing first setup script...');
 			setTimeout(handleClientSetup, 100);
+			mainWindow.webContents.send('async-progress', 40);
 		    }).on('data', (data) => {
 		      console.log('STDOUT: ' + data);
 		    }).stderr.on('data', (data) => {
@@ -223,6 +227,7 @@ function handleClientSetup() {
 			currentSetupState = SetupState.WaitingForReboot;
 			mainWindow.webContents.send('async-status','First setup script finished, rebooting omega...');
 			clientConnection.end();
+			mainWindow.webContents.send('async-progress', 50);
 			setTimeout(handleClientSetup, 10000);
 		    }).on('data', (data) => {
 		      console.log('STDOUT: ' + data);
@@ -238,6 +243,7 @@ function handleClientSetup() {
 		clientConnection.on('ready', () => {
 		  	console.log('ssh Client is ready after reboot');
 			mainWindow.webContents.send('async-status','Connected after omega reboot, running second setup script...');
+			mainWindow.webContents.send('async-progress', 70);
 			// run second shell script
 			clientConnection.exec('touch /root/containerPassword.txt && printf ' + encPassword + ' > /root/containerPassword.txt && python3 /root/tempsetupfiles/setupkey_pt2.py', (err, stream) => {
 			    if (err) {
@@ -250,6 +256,7 @@ function handleClientSetup() {
 				currentSetupState = SetupState.CheckDriveMounted;
 				mainWindow.webContents.send('async-status','Second setup script finished, checking that drive mounted successfully...');
 				setTimeout(handleClientSetup, 100);
+				mainWindow.webContents.send('async-progress', 90);
 			    }).on('data', (data) => {
 			      console.log('STDOUT: ' + data);
 			    }).stderr.on('data', (data) => {
@@ -288,6 +295,7 @@ function handleClientSetup() {
 					console.log("found mounted container!!");
 					currentSetupState = SetupState.Finished;
 					mainWindow.webContents.send('async-status','Drive mounted successfully, setup is finished!');
+					mainWindow.webContents.send('async-progress', 100);
 				}
 				else
 				{

@@ -6,6 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 <script>window.$ = window.jQuery = require('jquery');</script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="assets/js/jquery-ui.min.js"></script>
+<script src="render.js"></script>
+<script>
+         $(function() {
+            $( "#progressbar" ).progressbar({
+               value: 0
+            });
+         });
+      </script>
     <title>Keychain Backup Device Manager</title>
 </head>
 
@@ -35,7 +45,9 @@
      </div>
      <div id="setupStatusDiv">
          <h1>Connecting to device...</h1>
+         <br>
      </div>
+         <div id = "progressbar"></div> 
 </body>
 
 <script>
@@ -43,11 +55,13 @@
 document.addEventListener("DOMContentLoaded", function(){
 	$('#setupStatusDiv').hide();
 	$('#confirmDelete').hide();
+	$('#progressbar').hide();
 });
 
 const { ipcRenderer } = require('electron');
 
 $("#setupDeviceButton").on('click', () => {
+
 	$('#setupformDiv').hide();
 	$('#confirmDelete').show();
 
@@ -89,7 +103,6 @@ $("#confirmSetupDeviceButton").on('click', () => {
 	else
 	{
 		$('#encryptedErrorMessage').hide();
-                $('#setupformDiv').hide();
 	}
 });
 
@@ -99,6 +112,12 @@ ipcRenderer.on('async-status', (event, arg) => {
     $('#setupStatusDiv').html("<h1>" + arg + "</H1>");
 
     $('#setupStatusDiv').show();
+	$('#progressbar').show();
+})
+
+ipcRenderer.on('async-progress', (event, arg) => {
+	console.log("PROgress!!!" + arg);
+	$('#progressbar').progressbar("value", arg); 
 })
 </script>
 </html>
