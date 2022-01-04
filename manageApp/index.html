@@ -15,6 +15,10 @@
                value: 0
             });
          });
+
+	$( function() {
+	    $( "#advancedAccordion" ).accordion();
+	  } );
       </script>
     <title>Keychain Backup Device Manager</title>
 </head>
@@ -27,13 +31,25 @@
     	</div>
         Omega2 ip address:
         <input type="text" maxlength="3" size="3" id="octetA"></input>.<input type="text" maxlength="3"size="3" id="octetB"></input>.<input type="text" maxlength="3"size="3" id="octetC"></input>.<input type="text" maxlength="3"size="3" id="octetD"></input><br>
-        Omega2 ssh Password:<input type="text" id="sshPassword" placeholder="leave blank to not change"></input><br>
+        Omega2 ssh Password (Leave blank to not change):<input type="text" id="sshPassword"></input><br>
 	<div id="encryptedErrorMessage">
     	</div>
 	Encrypted Container Password:<input type="text" id="encPassword"></input><br>
 	<button type="button" class="btn btn-primary" id="setupDeviceButton">
 	    Setup Device
 	</button>
+	<br>
+	<br>
+	<br>
+        <div id="advancedAccordion">
+		<h3>Advanced Options</h3>
+		  <div>
+		    <p>
+			Omega2 current password: <input id="currentPassword" type="text" placeholder="onioneer"></input>
+		    </p>
+		  </div>
+
+	</div>
         </div>
      </div>
      <div id="confirmDelete">
@@ -56,6 +72,12 @@ document.addEventListener("DOMContentLoaded", function(){
 	$('#setupStatusDiv').hide();
 	$('#confirmDelete').hide();
 	$('#progressbar').hide();
+
+
+	$("#advancedAccordion").accordion({
+	  active: false,
+	  collapsible: true
+	});
 });
 
 const { ipcRenderer } = require('electron');
@@ -76,6 +98,7 @@ $("#confirmSetupDeviceButton").on('click', () => {
     setupArgs["octetD"] = $("#octetD").val();
     setupArgs["sshPassword"] = $("#sshPassword").val();
     setupArgs["encPassword"] = $("#encPassword").val();
+    setupArgs["currentPassword"] = $("#currentPassword").val();
 
     $('#confirmDelete').hide();
 

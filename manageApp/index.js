@@ -6,6 +6,7 @@ const { readFileSync } = require('fs');
 // Season enums can be grouped as static members of a class
 class SetupState {
   // Create new instances of the same class as static attributes
+  static ChangePassword = new SetupState("changepassword")
   static Connecting = new SetupState("connecting")
   static Connected = new SetupState("connected")
   static UploadingZip = new SetupState("uploadingzip")
@@ -31,6 +32,8 @@ var clientConnection;
 
 var clientIpAddress;
 var encPassword;
+var sshPassword = "";
+var currentSshPassword = 'onioneer';
 
 const loadMainWindow = () => {
     mainWindow = new BrowserWindow({
@@ -104,9 +107,18 @@ ipcMain.on('setupDevice', (event, args) => {
 		return;
 	}
 
-	currentSetupState = SetupState.Connecting;
+	if (args["sshPassword"].length != 0) {
+		currentSetupState = SetupState.ChangePassword;
+		sshPassword = args["sshPassword"];
+	}
+	else {
+		currentSetupState = SetupState.Connecting;
+	}
 	clientIpAddress = ipAddressString;
 	encPassword = args["encPassword"];
+	if (args["currentPassword"].length !== 0) {
+		currentSshPassword = args["currentPassword"];
+	}
 
 	setTimeout(handleClientSetup, 100);
 });
@@ -114,7 +126,62 @@ ipcMain.on('setupDevice', (event, args) => {
 
 function handleClientSetup() {
 
+	if (currentSetupState === SetupState.ChangePassword) {
+		mainWindow.webContents.send('async-status','Setting new password...');
+
+		clientConnection = new Client();
+
+		clientConnection.on('ready', () => {
+		  console.log('ssh Client is ready to change password');
+
+			clientConnection.exec('yes ' + sshPassword + ' | passwd root', (err, stream) => {
+			    if (err) {
+				console.log('SSH - Connection Error: ' + err);
+			  	currentSetupState = SetupState.ConnectionError;
+				mainWindow.webContents.send('async-status','SSH connection error!');
+			    }
+			    stream.on('close', (code, signal) => {
+			      console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
+				
+			    }).on('data', (data) => {
+			      console.log('STDOUT: ' + data);
+			    }).stderr.on('data', (data) => {
+			      console.log('STDERR: ' + data);
+				if (data.includes('password for root changed by root'))
+				{
+					mainWindow.webContents.send('async-status','Updated Password');
+					mainWindow.webContents.send('async-progress', 10);
+					clientConnection.end();
+					currentSetupState = SetupState.Connecting;
+					setTimeout(handleClientSetup, 1000);
+				}
+			    });
+			  });
+
+		});
+
+		clientConnection.on('error', function(err) {
+		  console.log('SSH - Connection Error: ' + err);
+		  currentSetupState = SetupState.ConnectionError;
+		  mainWindow.webContents.send('async-status','SSH connection error!');
+		  setTimeout(handleClientSetup, 100);
+		});
+
+		clientConnection.connect({
+		  host: clientIpAddress,
+		  port: 22,
+		  username: 'root',
+		  password: currentSshPassword
+		});
+
+	}
+
 	if (currentSetupState === SetupState.Connecting) {
+
+		if (sshPassword.length === 0) {
+			sshPassword = currentSshPassword;
+		}		
+	
 		mainWindow.webContents.send('async-status','Connecting...');
 
 		clientConnection = new Client();
@@ -124,7 +191,7 @@ function handleClientSetup() {
 			currentSetupState = SetupState.Connected;
 
 			mainWindow.webContents.send('async-status','Connected to Omega, checking for usb drive...');
-			mainWindow.webContents.send('async-progress', 10);
+			mainWindow.webContents.send('async-progress', 20);
 
 			clientConnection.exec('dmesg | grep "sda] Atta"', (err, stream) => {
 			    if (err) {
@@ -147,6 +214,7 @@ function handleClientSetup() {
 			       else 
 				{
 					console.log("usb drive not found trying again");
+					mainWindow.webContents.send('async-status','usb drive NOT found, please make sure USB drive is inserted.');
 					setTimeout(handleClientSetup, 5000);
 				}
 			    }).stderr.on('data', (data) => {
@@ -167,7 +235,7 @@ function handleClientSetup() {
 		  host: clientIpAddress,
 		  port: 22,
 		  username: 'root',
-		  password: 'onioneer'
+		  password: sshPassword
 		});
 	}
 	if (currentSetupState === SetupState.Connected) {
@@ -185,7 +253,7 @@ function handleClientSetup() {
 				{
 					currentSetupState = SetupState.UploadedZip
 					mainWindow.webContents.send('async-status','Setup files uploaded, Extracting...');
-					mainWindow.webContents.send('async-progress', 30);
+					mainWindow.webContents.send('async-progress', 40);
 				}
 
 				setTimeout(handleClientSetup, 100);
@@ -205,7 +273,7 @@ function handleClientSetup() {
 			currentSetupState = SetupState.ExtractedZip;
 			mainWindow.webContents.send('async-status','Setup files extracted, executing first setup script...');
 			setTimeout(handleClientSetup, 100);
-			mainWindow.webContents.send('async-progress', 40);
+			mainWindow.webContents.send('async-progress', 50);
 		    }).on('data', (data) => {
 		      console.log('STDOUT: ' + data);
 		    }).stderr.on('data', (data) => {
@@ -227,7 +295,7 @@ function handleClientSetup() {
 			currentSetupState = SetupState.WaitingForReboot;
 			mainWindow.webContents.send('async-status','First setup script finished, rebooting omega...');
 			clientConnection.end();
-			mainWindow.webContents.send('async-progress', 50);
+			mainWindow.webContents.send('async-progress', 60);
 			setTimeout(handleClientSetup, 10000);
 		    }).on('data', (data) => {
 		      console.log('STDOUT: ' + data);
@@ -275,7 +343,7 @@ function handleClientSetup() {
 		  host: clientIpAddress,
 		  port: 22,
 		  username: 'root',
-		  password: 'onioneer'
+		  password: sshPassword
 		});
 	}
 	else if (currentSetupState === SetupState.CheckDriveMounted)
@@ -289,7 +357,7 @@ function handleClientSetup() {
 			    stream.on('close', (code, signal) => {
 			      console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
 			    }).on('data', (data) => {
-			      console.log('AAAAAAaSTDOUT: ' + data);
+			      console.log('STDOUT: ' + data);
 				if (data.includes('/dev/mapper/container on /tmp/container type ext4'))
 				{
 					console.log("found mounted container!!");
