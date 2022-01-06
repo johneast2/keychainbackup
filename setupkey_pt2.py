@@ -40,7 +40,7 @@ def main():
 
     process = subprocess.run("cp /root/tempsetupfiles/driveMonitor.py /root/", shell=True)
 
-    #process = subprocess.run("cp /root/tempsetupfiles/rc.local /etc/rc.local", shell=True)
+    process = subprocess.run("cp /root/tempsetupfiles/rc.local /etc/rc.local", shell=True)
 
     process = subprocess.run("rm -rf /root/tempsetupfiles", shell=True)
 
