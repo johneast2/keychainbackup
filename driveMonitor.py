@@ -51,9 +51,22 @@ def checkDriveState(driveStateParam):
         process.communicate((containerPassword + "\n").encode("ascii"))
         process.wait()
 
-        process = subprocess.run("mount /dev/mapper/container /tmp/container/", shell=True)
+        time.sleep(5)
 
-        driveStateParam = DriveState.CONTAINER_MOUNTED
+        process = subprocess.run("mount /dev/mapper/container /tmp/container/ && sleep 5", shell=True)
+
+        #actually check if the conatiner mounted
+        mountCheckResult = ''
+
+        mountCheckResult = subprocess.run(['mount'], stdout=subprocess.PIPE, universal_newlines=True)
+        print(mountCheckResult)
+
+        if "container" in mountCheckResult.stdout:
+            driveStateParam = DriveState.CONTAINER_MOUNTED
+            process = subprocess.run("dropbear -P /var/run/dropbear2.pid -p 2222 -K 300 -T 3", shell=True)
+
+        else:
+            driveStateParam = DriveState.CONTAINER_ERROR
 
     return driveStateParam
 
