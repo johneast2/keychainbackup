@@ -47,6 +47,9 @@
 		    <p>
 			Omega2 current password: <input id="currentPassword" type="text" placeholder="onioneer"></input>
 		    </p>
+		    <p>
+			Hide Omega2 SSID:<input type="checkbox" id="hideSsid" checked>
+		    </p>
 		  </div>
 
 	</div>
@@ -99,6 +102,7 @@ $("#confirmSetupDeviceButton").on('click', () => {
     setupArgs["sshPassword"] = $("#sshPassword").val();
     setupArgs["encPassword"] = $("#encPassword").val();
     setupArgs["currentPassword"] = $("#currentPassword").val();
+    setupArgs["hideSsid"] = $('#hideSsid').prop('checked');
 
     $('#confirmDelete').hide();
 
@@ -139,7 +143,6 @@ ipcRenderer.on('async-status', (event, arg) => {
 })
 
 ipcRenderer.on('async-progress', (event, arg) => {
-	console.log("PROgress!!!" + arg);
 	$('#progressbar').progressbar("value", arg); 
 })
 </script>

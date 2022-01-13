@@ -15,6 +15,7 @@ class SetupState {
   static WaitingForReboot = new SetupState("watitingforreboot")
   static RunPart2 = new SetupState("runpart2")
   static CheckDriveMounted = new SetupState("checkdrivemounted")
+  static HideSSID = new SetupState("hidessid")
   static Finished = new SetupState("finished")
   static FailedToMount = new SetupState("failedtomount")
   static ConnectionError = new SetupState("connectionerror")
@@ -34,6 +35,7 @@ var clientIpAddress;
 var encPassword;
 var sshPassword = "";
 var currentSshPassword = 'onioneer';
+var hideSsid = true;
 
 const loadMainWindow = () => {
     mainWindow = new BrowserWindow({
@@ -114,10 +116,17 @@ ipcMain.on('setupDevice', (event, args) => {
 	else {
 		currentSetupState = SetupState.Connecting;
 	}
+
 	clientIpAddress = ipAddressString;
 	encPassword = args["encPassword"];
+
 	if (args["currentPassword"].length !== 0) {
 		currentSshPassword = args["currentPassword"];
+	}
+
+	if (args["hideSsid"] === false) {
+		console.log("NOT hiding omega2 ap ssid!");
+		hideSsid = false;
 	}
 
 	setTimeout(handleClientSetup, 100);
@@ -360,10 +369,10 @@ function handleClientSetup() {
 			      console.log('STDOUT: ' + data);
 				if (data.includes('/dev/mapper/container on /tmp/container type ext4'))
 				{
-					console.log("found mounted container!!");
-					currentSetupState = SetupState.Finished;
-					mainWindow.webContents.send('async-status','Drive mounted successfully, setup is finished!');
-					mainWindow.webContents.send('async-progress', 100);
+					console.log("found mounted container!!, checking to hide ssid");
+					currentSetupState = SetupState.HideSSID;
+					setTimeout(handleClientSetup, 100);
+					mainWindow.webContents.send('async-progress', 95);
 				}
 				else
 				{
@@ -375,6 +384,40 @@ function handleClientSetup() {
 			      console.log('STDERR: ' + data);
 			    });
 			  });
+	}
+
+	else if (currentSetupState === SetupState.HideSSID)
+	{
+		if (hideSsid === true)
+		{
+			clientConnection.exec('uci set wireless.radio0.hidden=1 && uci set wireless.ap.hidden=1 && uci commit && uci show | grep hidden | wc -l', (err, stream) => {
+			    if (err) {
+				console.log('SSH - Connection Error: ' + err);
+			  	currentSetupState = SetupState.ConnectionError;
+				mainWindow.webContents.send('async-status','SSH Connection Error!');
+			    }
+			    stream.on('close', (code, signal) => {
+			      console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
+			    }).on('data', (data) => {
+			      console.log('STDOUT: ' + data);
+				if (data.includes('2'))
+				{
+					console.log("ssid is hidden");
+					currentSetupState = SetupState.Finished;
+					mainWindow.webContents.send('async-status','Drive mounted successfully, setup is finished!');
+					mainWindow.webContents.send('async-progress', 100);
+				}
+			    }).stderr.on('data', (data) => {
+			      console.log('STDERR: ' + data);
+			    });
+			  });
+		}
+		else
+		{
+			currentSetupState = SetupState.Finished;
+			mainWindow.webContents.send('async-status','Drive mounted successfully, setup is finished!');
+			mainWindow.webContents.send('async-progress', 100);
+		}
 	}
 }
 
