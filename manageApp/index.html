@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-<script>window.$ = window.jQuery = require('jquery');</script>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <script>window.$ = window.jQuery = require('jquery');</script>
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="assets/js/jquery-ui.min.js"></script>
 <script src="render.js"></script>
@@ -20,21 +20,48 @@
 	    $( "#advancedAccordion" ).accordion();
 	  } );
       </script>
+	<style>
+	.loader {
+	  border: 5px solid #f3f3f3;
+	  border-radius: 50%;
+	  border-top: 5px solid #3498db;
+	  width: 20px;
+	  height: 20px;
+	  -webkit-animation: spin 2s linear infinite; /* Safari */
+	  animation: spin 2s linear infinite;
+	}
+
+	/* Safari */
+	@-webkit-keyframes spin {
+	  0% { -webkit-transform: rotate(0deg); }
+	  100% { -webkit-transform: rotate(360deg); }
+	}
+
+	@keyframes spin {
+	  0% { transform: rotate(0deg); }
+	  100% { transform: rotate(360deg); }
+	}
+	</style>
     <title>Keychain Backup Device Manager</title>
 </head>
 
 <body>
+    <center>
     <div id="setupDeviceDiv">
     <h1>Keychain Backup Device Manager</h1>
         <div id="setupformDiv">
     	<div id="ipAddressErrorMessage">
     	</div>
+        <table><tr><td>
         Omega2 ip address:
         <input type="text" maxlength="3" size="3" id="octetA"></input>.<input type="text" maxlength="3"size="3" id="octetB"></input>.<input type="text" maxlength="3"size="3" id="octetC"></input>.<input type="text" maxlength="3"size="3" id="octetD"></input><br>
         Omega2 ssh Password (Leave blank to not change):<input type="text" id="sshPassword"></input><br>
 	<div id="encryptedErrorMessage">
     	</div>
 	Encrypted Container Password:<input type="text" id="encPassword"></input><br>
+        </tr></td>
+	</table>
+        <br>
 	<button type="button" class="btn btn-primary" id="setupDeviceButton">
 	    Setup Device
 	</button>
@@ -44,29 +71,36 @@
         <div id="advancedAccordion">
 		<h3>Advanced Options</h3>
 		  <div>
+        <table><tr><td>
 		    <p>
 			Omega2 current password: <input id="currentPassword" type="text" placeholder="onioneer"></input>
 		    </p>
 		    <p>
 			Hide Omega2 SSID:<input type="checkbox" id="hideSsid" checked>
 		    </p>
+        </tr></td>
+	</table>
 		  </div>
 
 	</div>
         </div>
      </div>
      <div id="confirmDelete">
+	<br>
+	<br>
         <H1>!! WARNING !!</H1><br>
         This setup process will delete all files on the usb drive.<br><br>
         <button type="button" class="btn btn-warning" id="confirmSetupDeviceButton">
 	    I understand that all files will be erased!<br><br>Click here to continue with setup
 	</button>
      </div>
-     <div id="setupStatusDiv">
-         <h1>Connecting to device...</h1>
+     <div id="setupStatusDiv"  style="display: inline-block">
          <br>
+         Connecting to device...
      </div>
-         <div id = "progressbar"></div> 
+	 <br>
+         <div id = "progressbar" style="width: 80%;"></div> 
+     <center>
 </body>
 
 <script>
@@ -136,7 +170,16 @@ $("#confirmSetupDeviceButton").on('click', () => {
 ipcRenderer.on('async-status', (event, arg) => {
     $('#setupformDiv').hide();
 
-    $('#setupStatusDiv').html("<h1>" + arg + "</H1>");
+    $('#setupStatusDiv').html("<br>" + arg + "<div class='loader' style='display: inline-block'></div>");
+
+    $('#setupStatusDiv').show();
+	$('#progressbar').show();
+})
+
+ipcRenderer.on('async-finished', (event, arg) => {
+    $('#setupformDiv').hide();
+
+    $('#setupStatusDiv').html("<br>" + arg);
 
     $('#setupStatusDiv').show();
 	$('#progressbar').show();
@@ -144,6 +187,17 @@ ipcRenderer.on('async-status', (event, arg) => {
 
 ipcRenderer.on('async-progress', (event, arg) => {
 	$('#progressbar').progressbar("value", arg); 
+})
+
+ipcRenderer.on('async-error', (event, arg) => {
+    $('#setupformDiv').hide();
+
+    $('#setupStatusDiv').html("<br>" + arg);
+
+    $('#setupStatusDiv').show();
+	$('#progressbar').show();
+
+	$("#progressbar > div").css({ 'background': 'Red' });
 })
 </script>
 </html>

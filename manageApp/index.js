@@ -66,7 +66,6 @@ app.on("activate", () => {
 
 ipcMain.on('setupDevice', (event, args) => {
 	console.log("clicked on setupDevice");
-        console.log(args);
 
 
 	// validate ip address
@@ -147,7 +146,7 @@ function handleClientSetup() {
 			    if (err) {
 				console.log('SSH - Connection Error: ' + err);
 			  	currentSetupState = SetupState.ConnectionError;
-				mainWindow.webContents.send('async-status','SSH connection error!');
+				mainWindow.webContents.send('async-error','SSH connection error!');
 			    }
 			    stream.on('close', (code, signal) => {
 			      console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
@@ -172,7 +171,7 @@ function handleClientSetup() {
 		clientConnection.on('error', function(err) {
 		  console.log('SSH - Connection Error: ' + err);
 		  currentSetupState = SetupState.ConnectionError;
-		  mainWindow.webContents.send('async-status','SSH connection error!');
+		  mainWindow.webContents.send('async-error','SSH connection error! Please verify that the ssh password is correct!');
 		  setTimeout(handleClientSetup, 100);
 		});
 
@@ -206,7 +205,7 @@ function handleClientSetup() {
 			    if (err) {
 				console.log('SSH - Connection Error: ' + err);
 			  	currentSetupState = SetupState.ConnectionError;
-				mainWindow.webContents.send('async-status','SSH connection error!');
+				mainWindow.webContents.send('async-error','SSH connection error!');
 			    }
 			    stream.on('close', (code, signal) => {
 			      console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
@@ -236,7 +235,7 @@ function handleClientSetup() {
 		clientConnection.on('error', function(err) {
 		  console.log('SSH - Connection Error: ' + err);
 		  currentSetupState = SetupState.ConnectionError;
-		  mainWindow.webContents.send('async-status','SSH connection error!');
+		  mainWindow.webContents.send('async-error','SSH connection error! Please verify that the ssh password is correct!');
 		  setTimeout(handleClientSetup, 100);
 		});
 
@@ -256,7 +255,7 @@ function handleClientSetup() {
 				{
 			   		console.log('sftp - Upload error: ' + err);
 					currentSetupState = SetupState.ConnectionError;
-					mainWindow.webContents.send('async-status','SSH connection error!');
+					mainWindow.webContents.send('async-error','SSH connection error!');
 				}
 				else
 				{
@@ -275,7 +274,7 @@ function handleClientSetup() {
 		    if (err) {
 			console.log('SSH - Connection Error: ' + err);
 		  	currentSetupState = SetupState.ConnectionError;
-			mainWindow.webContents.send('async-status','SSH connection error!');
+			mainWindow.webContents.send('async-error','SSH connection error!');
 		    }
 		    stream.on('close', (code, signal) => {
 		      console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
@@ -297,7 +296,7 @@ function handleClientSetup() {
 		    if (err) {
 			console.log('SSH - Connection Error: ' + err);
 		  	currentSetupState = SetupState.ConnectionError;
-			mainWindow.webContents.send('async-status','SSH connection error!');
+			mainWindow.webContents.send('async-error','SSH connection error!');
 		    }
 		    stream.on('close', (code, signal) => {
 		      console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
@@ -326,7 +325,7 @@ function handleClientSetup() {
 			    if (err) {
 				console.log('SSH - Connection Error: ' + err);
 		  		currentSetupState = SetupState.ConnectionError;
-				mainWindow.webContents.send('async-status','SSH connection error!');
+				mainWindow.webContents.send('async-error','SSH connection error!');
 			    }
 			    stream.on('close', (code, signal) => {
 			      console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
@@ -361,7 +360,7 @@ function handleClientSetup() {
 			    if (err) {
 				console.log('SSH - Connection Error: ' + err);
 			  	currentSetupState = SetupState.ConnectionError;
-				mainWindow.webContents.send('async-status','SSH Connection Error!');
+				mainWindow.webContents.send('async-error','SSH Connection Error!');
 			    }
 			    stream.on('close', (code, signal) => {
 			      console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
@@ -394,7 +393,7 @@ function handleClientSetup() {
 			    if (err) {
 				console.log('SSH - Connection Error: ' + err);
 			  	currentSetupState = SetupState.ConnectionError;
-				mainWindow.webContents.send('async-status','SSH Connection Error!');
+				mainWindow.webContents.send('async-error','SSH Connection Error!');
 			    }
 			    stream.on('close', (code, signal) => {
 			      console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
@@ -404,7 +403,7 @@ function handleClientSetup() {
 				{
 					console.log("ssid is hidden");
 					currentSetupState = SetupState.Finished;
-					mainWindow.webContents.send('async-status','Drive mounted successfully, setup is finished!');
+					mainWindow.webContents.send('async-finished','Drive mounted successfully, setup is finished!');
 					mainWindow.webContents.send('async-progress', 100);
 				}
 			    }).stderr.on('data', (data) => {
