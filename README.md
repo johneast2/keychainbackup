@@ -19,3 +19,9 @@
  8. Click setup device.
  9. You will need to click the warning button about all files being deleted from the USB drive.
  10. Once setup finishes, the encrypted storage container will be mounted at /tmp/container on the Omega2+.
+
+With the keychain backup device setup, next is setting up a backup program to backup to it. Any backup program that can send data to an SSH host should be able to work with keychain backup. [Here's an example using a free open source program](docs/SettingUpBackups.md)
+
+## File Recovery.
+
+For information on recovering files from the USB drive, [see this document.](docs/RecoveringFiles.md)
