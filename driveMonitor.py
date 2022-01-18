@@ -15,10 +15,32 @@ class DriveState(Enum):
     CONTAINER_ERROR = 5
     NO_CONTAINER_PASSWORD = 6
 
+def driveIsMounted():
+    mountCheckResult = ''
+
+    mountCheckResult = subprocess.run(['mount'], stdout=subprocess.PIPE, universal_newlines=True)
+
+    if "container" in mountCheckResult.stdout:
+        return True
+    
+    return False
+
+def afterMountedSetup():
+    if not os.path.isdir('/root/encrypted_container'):
+        process = subprocess.run("ln -s /tmp/container/ /root/encrypted_container", shell=True)
+    process = subprocess.run("dropbear -P /var/run/dropbear2.pid -p 2222 -K 300 -T 3", shell=True)
+
 def checkDriveState(driveStateParam):
 
     if not os.path.isfile(passwordFile):
         return DriveState.NO_CONTAINER_PASSWORD
+
+    # check if the drive is already mounted:
+    if driveStateParam != DriveState.CONTAINER_MOUNTED and driveIsMounted():
+        driveStateParam = DriveState.CONTAINER_MOUNTED
+        afterMountedSetup()
+        return driveStateParam
+        
 
     sdaCheckResult = ''
 
@@ -56,14 +78,10 @@ def checkDriveState(driveStateParam):
         process = subprocess.run("mount /dev/mapper/container /tmp/container/ && sleep 5", shell=True)
 
         #actually check if the conatiner mounted
-        mountCheckResult = ''
 
-        mountCheckResult = subprocess.run(['mount'], stdout=subprocess.PIPE, universal_newlines=True)
-        print(mountCheckResult)
-
-        if "container" in mountCheckResult.stdout:
+        if driveIsMounted():
+            afterMountedSetup()
             driveStateParam = DriveState.CONTAINER_MOUNTED
-            process = subprocess.run("dropbear -P /var/run/dropbear2.pid -p 2222 -K 300 -T 3", shell=True)
 
         else:
             driveStateParam = DriveState.CONTAINER_ERROR
