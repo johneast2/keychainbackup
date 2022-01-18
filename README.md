@@ -3,7 +3,7 @@
 
 ## Hardware setup
  1. Insert the Omega2+ into the headers on the circuit board.
- 2. Insert the USB drive into the USB port. NOTE: The initial setup will erase all files on the USB drive!
+ 2. Insert the USB drive into the USB port. <b>NOTE: The initial setup will erase all files on the USB drive!</b>
  3. Plug in the micro usb connector on the circuit board, then insert the other end into the power brick and plug it in to power on the device.
 
 ## Software Setup
