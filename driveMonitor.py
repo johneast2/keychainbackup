@@ -60,7 +60,7 @@ def checkDriveState(driveStateParam):
     if driveStateParam == DriveState.USB_DRIVE_MOUNTED and not os.path.isfile(containerFile):
         return DriveState.NO_CONTAINER
 
-    if driveStateParam == DriveState.USB_DRIVE_MOUNTED and os.path.isfile(containerFile):
+    if driveStateParam == DriveState.USB_DRIVE_MOUNTED or driveStateParam == DriveState.NO_CONTAINER and os.path.isfile(containerFile):
         #get the password
         containerPassword = ""
         with open(passwordFile) as passwordFileHandle:
