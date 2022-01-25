@@ -3,7 +3,7 @@
 
 ## Hardware setup
  1. Insert the Omega2+ into the headers on the circuit board.
- 2. Insert the USB drive into the USB port. NOTE: The initial setup will erase all files on the USB drive!
+ 2. Insert the USB drive into the USB port. <b>NOTE: The initial setup will erase all files on the USB drive!</b>
  3. Plug in the micro usb connector on the circuit board, then insert the other end into the power brick and plug it in to power on the device.
 
 ## Software Setup
@@ -19,3 +19,9 @@
  8. Click setup device.
  9. You will need to click the warning button about all files being deleted from the USB drive.
  10. Once setup finishes, the encrypted storage container will be mounted at /tmp/container on the Omega2+.
+
+With the keychain backup device setup, next is setting up a backup program to backup to it. Any backup program that can send data to an SSH host should be able to work with keychain backup. [Here's an example using a free open source program](docs/SettingUpBackups.md)
+
+## File Recovery.
+
+For information on recovering files from the USB drive, [see this document.](docs/RecoveringFiles.md)
