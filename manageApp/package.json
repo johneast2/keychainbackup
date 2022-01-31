@@ -4,7 +4,8 @@
   "description": "setup keychainbackup ",
   "main": "index.js",
   "scripts": {
-    "start": "electron-forge start",
+    "start": "electron .",
+    "forge": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make"
   },

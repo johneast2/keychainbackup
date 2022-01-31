@@ -1,5 +1,4 @@
 import os
-from enum import Enum
 import time
 import subprocess
 from subprocess import Popen, PIPE

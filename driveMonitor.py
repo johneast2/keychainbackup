@@ -1,5 +1,4 @@
 import os
-from enum import Enum
 import time
 import subprocess
 from subprocess import Popen, PIPE
@@ -7,13 +6,12 @@ from subprocess import Popen, PIPE
 passwordFile = "/root/containerPassword.txt"
 containerFile = "/mnt/sda1/container.bin"
 
-class DriveState(Enum):
-    NO_USB_DRIVE = 1
-    USB_DRIVE_MOUNTED = 2
-    NO_CONTAINER = 3
-    CONTAINER_MOUNTED = 4
-    CONTAINER_ERROR = 5
-    NO_CONTAINER_PASSWORD = 6
+NO_USB_DRIVE = 1
+USB_DRIVE_MOUNTED = 2
+NO_CONTAINER = 3
+CONTAINER_MOUNTED = 4
+CONTAINER_ERROR = 5
+NO_CONTAINER_PASSWORD = 6
 
 def driveIsMounted():
     mountCheckResult = ''
@@ -33,11 +31,11 @@ def afterMountedSetup():
 def checkDriveState(driveStateParam):
 
     if not os.path.isfile(passwordFile):
-        return DriveState.NO_CONTAINER_PASSWORD
+        return NO_CONTAINER_PASSWORD
 
     # check if the drive is already mounted:
-    if driveStateParam != DriveState.CONTAINER_MOUNTED and driveIsMounted():
-        driveStateParam = DriveState.CONTAINER_MOUNTED
+    if driveStateParam != CONTAINER_MOUNTED and driveIsMounted():
+        driveStateParam = CONTAINER_MOUNTED
         afterMountedSetup()
         return driveStateParam
         
@@ -47,20 +45,20 @@ def checkDriveState(driveStateParam):
     sdaCheckResult = subprocess.run(['ls', '/dev'], stdout=subprocess.PIPE, universal_newlines=True)
 
     if not "sda1" in sdaCheckResult.stdout:
-        if driveStateParam != DriveState.NO_USB_DRIVE:
+        if driveStateParam != NO_USB_DRIVE:
             # got unplugged...
             # just do a reboot for now?
             # needed because dev mapper will allow it to continue to be written too even
             # though the disk is gone
             subprocess.run(['reboot'])
-        return DriveState.NO_USB_DRIVE
-    elif driveStateParam == DriveState.NO_USB_DRIVE:
-        driveStateParam = DriveState.USB_DRIVE_MOUNTED
+        return NO_USB_DRIVE
+    elif driveStateParam == NO_USB_DRIVE:
+        driveStateParam = USB_DRIVE_MOUNTED
 
-    if driveStateParam == DriveState.USB_DRIVE_MOUNTED and not os.path.isfile(containerFile):
-        return DriveState.NO_CONTAINER
+    if driveStateParam == USB_DRIVE_MOUNTED and not os.path.isfile(containerFile):
+        return NO_CONTAINER
 
-    if driveStateParam == DriveState.USB_DRIVE_MOUNTED or driveStateParam == DriveState.NO_CONTAINER and os.path.isfile(containerFile):
+    if driveStateParam == USB_DRIVE_MOUNTED or driveStateParam == NO_CONTAINER and os.path.isfile(containerFile):
         #get the password
         containerPassword = ""
         with open(passwordFile) as passwordFileHandle:
@@ -81,16 +79,16 @@ def checkDriveState(driveStateParam):
 
         if driveIsMounted():
             afterMountedSetup()
-            driveStateParam = DriveState.CONTAINER_MOUNTED
+            driveStateParam = CONTAINER_MOUNTED
 
         else:
-            driveStateParam = DriveState.CONTAINER_ERROR
+            driveStateParam = CONTAINER_ERROR
 
     return driveStateParam
 
 
 def main():
-    currentDriveState = DriveState.NO_USB_DRIVE
+    currentDriveState = NO_USB_DRIVE
 
     while True:
 
