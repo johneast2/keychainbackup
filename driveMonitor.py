@@ -4,8 +4,14 @@ import time
 import subprocess
 from subprocess import Popen, PIPE
 
+import onionGpio3
+
+
+
 passwordFile = "/root/containerPassword.txt"
 containerFile = "/mnt/sda1/container.bin"
+
+containerMountTimeLimitSeconds = 60
 
 class DriveState(Enum):
     NO_USB_DRIVE = 1
@@ -90,7 +96,18 @@ def checkDriveState(driveStateParam):
 
 
 def main():
+    gpio19Green = onionGpio3.OnionGpio(19)
+    gpio18Red = onionGpio3.OnionGpio(18)
+
+    # turn on the green gpio, show its on
+    gpio19Green.setOutputDirection(1)
+
+    # turn off the red gpio
+    gpio18Red.setOutputDirection(0)
+
     currentDriveState = DriveState.NO_USB_DRIVE
+
+    mountWaitTimerSeconds = -1
 
     while True:
 
@@ -100,6 +117,22 @@ def main():
         driveStateFile = open(driveStatePath, 'w')
 
         driveStateFile.write(currentDriveState.name)
+
+        if currentDriveState == DriveState.CONTAINER_ERROR or currentDriveState == DriveState.NO_CONTAINER_PASSWORD:
+            gpio18Red.setOutputDirection(1)
+        else:
+
+            if currentDriveState == DriveState.NO_CONTAINER and mountWaitTimerSeconds == -1:
+                mountWaitTimerSeconds = 0
+            elif currentDriveState != DriveState.NO_CONTAINER and mountWaitTimerSeconds != -1:
+                mountWaitTimerSeconds = -1
+            elif currentDriveState == DriveState.NO_CONTAINER and mountWaitTimerSeconds != -1:
+                mountWaitTimerSeconds = mountWaitTimerSeconds + 1
+
+            if currentDriveState == DriveState.NO_CONTAINER and mountWaitTimerSeconds > containerMountTimeLimitSeconds:
+                gpio18Red.setOutputDirection(1)
+            else:
+                gpio18Red.setOutputDirection(0)
 
         time.sleep(1)
 
