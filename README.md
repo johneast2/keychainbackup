@@ -25,3 +25,11 @@ With the keychain backup device setup, next is setting up a backup program to ba
 ## File Recovery.
 
 For information on recovering files from the USB drive, [see this document.](docs/RecoveringFiles.md)
+
+## Building the manager app
+
+You will need nodjes and npm isntalled.
+
+Install electron-packager: ```npm install --save-dev electron-packager```
+
+Then to build it for windows: ```npx electron-packager manageApp/ keybackupmanager --platform=win32 --arch=x64```
