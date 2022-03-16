@@ -58,6 +58,10 @@ app.on("window-all-closed", () => {
   }
 });
 
+ipcMain.on('quit-app', (event, args) => {
+  app.quit();
+});
+
 app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
         loadMainWindow();
@@ -414,7 +418,7 @@ function handleClientSetup() {
 		else
 		{
 			currentSetupState = SetupState.Finished;
-			mainWindow.webContents.send('async-status','Drive mounted successfully, setup is finished!');
+			mainWindow.webContents.send('async-finished','Drive mounted successfully, setup is finished!');
 			mainWindow.webContents.send('async-progress', 100);
 		}
 	}

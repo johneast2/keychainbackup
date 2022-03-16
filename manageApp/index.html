@@ -100,6 +100,12 @@
      </div>
 	 <br>
          <div id = "progressbar" style="width: 80%;"></div> 
+
+	 <br>
+         <div id = "congrats" style="width: 80%;"><h1>Congratulations!</h1> <h2>Your keychain backup is setup!</h2><h3>Ready to get backups setup? <br>Check out our getting started guide using Duplicati, a free and open source backup solution! <a href="https://github.com/johneast2/keychainbackup/blob/main/docs/SettingUpBackups.md">Click Here!</a></h3><br><br><button type="button" class="btn btn-primary" id="quitSetupButton">
+	    Quit Setup
+	</button></div> 
+
      <center>
 </body>
 
@@ -109,6 +115,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	$('#setupStatusDiv').hide();
 	$('#confirmDelete').hide();
 	$('#progressbar').hide();
+	$('#congrats').hide();
 
 
 	$("#advancedAccordion").accordion({
@@ -117,12 +124,24 @@ document.addEventListener("DOMContentLoaded", function(){
 	});
 });
 
+$('body').on('click', 'a', (event) => {
+  event.preventDefault();
+  require("electron").shell.openExternal(event.target.href);
+});
+
 const { ipcRenderer } = require('electron');
 
 $("#setupDeviceButton").on('click', () => {
 
 	$('#setupformDiv').hide();
 	$('#confirmDelete').show();
+
+
+});
+
+$("#quitSetupButton").on('click', () => {
+
+	ipcRenderer.sendSync('quit-app');
 
 
 });
@@ -183,6 +202,7 @@ ipcRenderer.on('async-finished', (event, arg) => {
 
     $('#setupStatusDiv').show();
 	$('#progressbar').show();
+	$('#congrats').show();
 })
 
 ipcRenderer.on('async-progress', (event, arg) => {
