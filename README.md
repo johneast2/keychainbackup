@@ -53,7 +53,7 @@ While this is a cool backup device, there are some limitations to be aware of. I
 
 1. Backup speed is not fast. The fastest I've been able to backup data to it is about 1GB in 15 minutes. Assuming 1GB every 15 minutes, if the device is plugged in over night for 8 hours, it could backup 32GB.
 2. Its backing up on a solid state USB device. Backing up constantly changing data will probably shorten the lifetime of the USB device.
-3. The encryption key is stored on the device on your wall. If someone gets access to it, they will be able to decrypt all the data on the USB device. The encryption is designed to prevent someone random person from viewing your photos and it probably won't stop someone who's determined to get access to it.
+3. The encryption key is stored on the device on your wall. If someone gets access to it, they will be able to decrypt all the data on the USB device. The encryption is designed to prevent some random person from viewing your photos and it probably won't stop someone who is determined to get access to it.
 
 ## File Recovery.
 
