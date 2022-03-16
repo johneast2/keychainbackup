@@ -13,9 +13,12 @@
 
  ![hooks installed](pictures/hooks_installed.jpg)
  3. Insert the Omega2+ into the headers on the circuit board.
+ 
  4. To mount the device on the wall, drill two 1/4" holes, using the case as a guide. Insert the blue drywall hangars into the holes.
  ![drywall hangars](pictures/drywall_mounting.jpg)
+ 
  5. Insert the USB drive into the USB port. <b>NOTE: The initial setup will erase all files on the USB drive!</b>
+ 
  6. Plug in the micro usb connector on the circuit board, then insert the other end into the power brick and plug it in to power on the device.
  ![plug in microusb](pictures/plug_in_power.jpg)
 
