@@ -4,7 +4,7 @@
 ## Hardware setup
 
 ### Items needed: Phillips screwdriver, 1/4" drill bit, drill, anti static wrist strap, and an Omega2+.
- 1. place the circuit board on the case and screw in the 4 m3 screws.
+ 1. Place the circuit board on the case and screw in the 4 m3 screws.
 
  ![PCB in case](pictures/pcb_placed_in_case.jpg)
 
@@ -20,7 +20,7 @@
 
  ![omega2+ mounted](pictures/omega_mounted.jpg)
  
- 4. To mount the device on the wall, drill two 1/4" holes, using the case as a guide. Insert the blue drywall hangars into the holes.
+ 4. To mount the device on the wall, drill two 1/4" holes, using the case as a guide. Insert the blue drywall hangars into the holes. Then use the provided silver screws to screw the case to the wall.
 
  ![drywall hangars](pictures/drywall_mounting.jpg)
  
@@ -53,8 +53,7 @@ While this is a cool backup device, there are some limitations to be aware of. I
 
 1. Backup speed is not fast. The fastest I've been able to backup data to it is about 1GB in 15 minutes. Assuming 1GB every 15 minutes, if the device is plugged in over night for 8 hours, it could backup 32GB.
 2. Its backing up on a solid state USB device. Backing up constantly changing data will probably shorten the lifetime of the USB device.
-
-
+3. The encryption key is stored on the device on your wall. If someone gets access to it, they will be able to decrypt all the data on the USB device. The encryption is designed to prevent someone random person from viewing your photos and it probably won't stop someone who's determined to get access to it.
 
 ## File Recovery.
 
