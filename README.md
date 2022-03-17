@@ -1,6 +1,21 @@
 
 # keychainbackup
 
+## What is keychainbackup?
+
+Keychain backup is a simple device to create encrypted backups of your files that you take with you on your keychain!
+
+
+<img align="right" width="150" height="150" src="pictures/pluginbluearrow.png">
+
+
+Plug in your USB drive when you hang up your keys.
+
+
+While you sleep, your files are backed up.
+
+When you go somewhere, unplug your usb drive and take them with you!
+
 ## Hardware setup
 
 ### Items needed: Phillips screwdriver, 1/4" drill bit, drill, anti static wrist strap, and an Omega2+.
