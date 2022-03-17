@@ -5,9 +5,11 @@
 
 Keychain backup is a simple device to create encrypted backups of your files that you take with you on your keychain!
 
-Plug in your USB drive when you hang up your keys.
 
-<img align="right" width="100" height="100" src="pictures/pluginbluearrow.png">
+<img align="right" width="150" height="150" src="pictures/pluginbluearrow.png">
+
+
+Plug in your USB drive when you hang up your keys.
 
 
 While you sleep, your files are backed up.
