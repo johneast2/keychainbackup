@@ -7,6 +7,8 @@ Keychain backup is a simple device to create encrypted backups of your files tha
 
 ![infographic](pictures/infographic.png)
 
+<a href="https://www.tindie.com/stores/thinklearndo/?ref=offsite_badges&utm_source=sellers_thinklearndo&utm_medium=badges&utm_campaign=badge_large"><img src="https://d2ss6ovg47m0r5.cloudfront.net/badges/tindie-larges.png" alt="I sell on Tindie" width="200" height="104"></a>
+
 ## Hardware setup
 
 ### Items needed: Phillips screwdriver, 1/4" drill bit, drill, anti static wrist strap, and an Omega2+.
