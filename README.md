@@ -3,11 +3,22 @@
 
 ## What is keychainbackup?
 
-Keychain backup is a simple device to create encrypted backups of your files that you take with you on your keychain!
+Keychain backup is a simple device to create encrypted backups of your files that you take with you on your keychain! Think of it as an offsite backup of your important files, that is always with you. With the added benfit of not having to pay monthly fees.
 
 ![infographic](pictures/infographic.png)
 
 <a href="https://www.tindie.com/stores/thinklearndo/?ref=offsite_badges&utm_source=sellers_thinklearndo&utm_medium=badges&utm_campaign=badge_large"><img src="https://d2ss6ovg47m0r5.cloudfront.net/badges/tindie-larges.png" alt="I sell on Tindie" width="200" height="104"></a>
+
+## Example setups
+
+Here's some examples of how to use keychain backup. Personally, I have a linux server that acts as a backup server. My important files from my other computers get backed up to it, then every night it backs up the changed files to the keychain backup. I have it scheduled to stop running the backup early in the morning, to make sure that the USB flash drive can be removed safely.
+
+![nightly backup](pictures/nightly_backup.png)
+
+Another idea I had was to alternate USB flash drives. That would allow backups to run during the day without an extra backup server.
+
+![Alternating backups](pictures/alternating_backups.png)
+
 
 ## Hardware setup
 
