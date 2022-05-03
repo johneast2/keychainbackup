@@ -1,13 +1,13 @@
 
 # keychainbackup
 
+<a href="https://www.tindie.com/stores/thinklearndo/?ref=offsite_badges&utm_source=sellers_thinklearndo&utm_medium=badges&utm_campaign=badge_large"><img align="right" src="https://d2ss6ovg47m0r5.cloudfront.net/badges/tindie-larges.png" alt="I sell on Tindie" width="200" height="104"></a>
+
 ## What is keychainbackup?
 
 Keychain backup is a simple device to create encrypted backups of your files that you take with you on your keychain! Think of it as an offsite backup of your important files, that is always with you. With the added benfit of not having to pay monthly fees.
 
 ![infographic](pictures/infographic.png)
-
-<a href="https://www.tindie.com/stores/thinklearndo/?ref=offsite_badges&utm_source=sellers_thinklearndo&utm_medium=badges&utm_campaign=badge_large"><img src="https://d2ss6ovg47m0r5.cloudfront.net/badges/tindie-larges.png" alt="I sell on Tindie" width="200" height="104"></a>
 
 ## Example setups
 
