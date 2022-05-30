@@ -1,6 +1,6 @@
-# Setting up backups with Duplicati to Keychain Backup
+# Setting up Syncthing to run on Keychain Backup
 
-Duplicati is a free, opensource backup application, avaible for Windows, Linux and MacOS. It supports connecing to SSH hosts, and scheduling backups, among other features.
+Syncthing is a free and open source program to allow you to synchronize your files betwee
 
 1. Download Duplicati and install it. Download from here: [Duplicati 2.0](https://www.duplicati.com/download)
 

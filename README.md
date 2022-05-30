@@ -66,6 +66,8 @@ Another idea I had was to alternate USB flash drives. That would allow backups t
 
 With the keychain backup device setup, next is setting up a backup program to backup to it. Any backup program that can send data to an SSH host should be able to work with keychain backup. [Here's an example using a free, open source program](docs/SettingUpBackups.md)
 
+Keychain Backup now supports Syncthing! For info on setting it up, check out the [Syncthing Documentation!](docs/SettingUpSyncthing.md)
+
 ## Limitations
 
 While this is a cool backup device, there are some limitations to be aware of. It's mostly designed to be used as a cold storage type device, where data is backed up to it that isn't changing often.
