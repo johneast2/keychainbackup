@@ -5,6 +5,8 @@ Syncthing is a free and open source program to allow you to synchronize your fil
 ## Manual setup:
 
 1. Download Synthing from our github repo: [Sything v1.20.1](../AdditionalFiles/syncthing)
+    
+    NOTE: This is the syncthing mipsle binary downloaded from [Syncthing's Download page](https://github.com/syncthing/syncthing/releases/download/v1.20.1/syncthing-linux-mipsle-v1.20.1.tar.gz), then shrunk using ```upx```. You can use the one from syncthing yourself, you'll just have to use ```upx``` to shrink it because its too big for the omega2+'s storage space.
 
 2. Use your favorite scp program to copy it to the /root/ folder on the omega2+.
 
