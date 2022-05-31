@@ -53,7 +53,7 @@ Another idea I had was to alternate USB flash drives. That would allow backups t
 ## Software Setup
 
  1. Go through Omega setup, [https://docs.onion.io/omega2-docs/first-time-setup.html](https://docs.onion.io/omega2-docs/first-time-setup.html)
- 2. Start the Setup app. [Get it here!](https://github.com/johneast2/keychainbackup/releases/tag/V1.0)
+ 2. Start the Setup app. [Get it here!](https://github.com/johneast2/keychainbackup/releases/tag/V1.1)
  3. Enter the Omega2+'s Ip address.
  ![Omega2p IP address spot](pictures/omega2p_ipaddress.png)
  4. Set a new SSH password the Omega2+.
