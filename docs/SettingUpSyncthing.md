@@ -1,6 +1,6 @@
 # Setting up Syncthing to run on Keychain Backup
 
-Syncthing is a free and open source program to allow you to synchronize your files between 2 or more computers.
+Syncthing is a free and open source program to allow you to synchronize your files between 2 or more computers. Find out about it by checking out its website: [https://syncthing.net/](https://syncthing.net/)
 
 ## Setup using the manage app:
 
