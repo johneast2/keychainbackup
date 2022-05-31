@@ -1,10 +1,10 @@
 #!/bin/bash
 
-opkg install --force-depends /root/tempsetupfiles/AdditionalFiles/*.ipk
+opkg install --force-depends /tmp/tempsetupfiles/AdditionalFiles/*.ipk
 
 sleep 5
 
-opkg install --force-depends /root/tempsetupfiles/AdditionalFiles/*.ipk
+opkg install --force-depends /tmp/tempsetupfiles/AdditionalFiles/*.ipk
 
 opkg update
 

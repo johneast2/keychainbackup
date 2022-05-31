@@ -2,10 +2,22 @@ import os
 import time
 import subprocess
 from subprocess import Popen, PIPE
+import sys, getopt
 
 passwordFile = "/root/containerPassword.txt"
 
-def main():
+def main(argv):
+
+    try:
+        opts, args = getopt.getopt(argv,"s")
+    except getopt.GetoptError:
+        print ('setupkey_pt2.py optional: -s')
+        sys.exit(2)
+
+    for opt, arg in opts:
+        if opt == '-s':
+            print("installing syncthing...")
+            process = subprocess.run("mv /root/tempsetupfiles/syncthing /root/ && chmod +x /root/syncthing", shell=True)
 
     process = subprocess.run("umount /dev/sda1", shell=True)
 
@@ -48,4 +60,4 @@ def main():
     process = subprocess.run("rm -rf /root/tempsetupfiles", shell=True)
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])

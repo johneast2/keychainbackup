@@ -73,6 +73,9 @@
 		  <div>
         <table><tr><td>
 		    <p>
+			Install Syncthing:<input type="checkbox" id="installSyncthing">
+		    </p>
+		    <p>
 			Omega2 current password: <input id="currentPassword" type="text" placeholder="onioneer"></input>
 		    </p>
 		    <p>
@@ -156,6 +159,7 @@ $("#confirmSetupDeviceButton").on('click', () => {
     setupArgs["encPassword"] = $("#encPassword").val();
     setupArgs["currentPassword"] = $("#currentPassword").val();
     setupArgs["hideSsid"] = $('#hideSsid').prop('checked');
+    setupArgs["installSyncthing"] = $('#installSyncthing').prop('checked');
 
     $('#confirmDelete').hide();
 

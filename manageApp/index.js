@@ -36,6 +36,7 @@ var encPassword;
 var sshPassword = "";
 var currentSshPassword = 'onioneer';
 var hideSsid = true;
+var installSyncthing = false;
 
 const loadMainWindow = () => {
     mainWindow = new BrowserWindow({
@@ -130,6 +131,14 @@ ipcMain.on('setupDevice', (event, args) => {
 	if (args["hideSsid"] === false) {
 		console.log("NOT hiding omega2 ap ssid!");
 		hideSsid = false;
+	}
+
+	if (args["installSyncthing"] === false) {
+		console.log("NOT installing sycnthing!");
+		installSyncthing = false;
+	}
+	else {
+		installSyncthing = true;
 	}
 
 	setTimeout(handleClientSetup, 100);
@@ -274,7 +283,7 @@ function handleClientSetup() {
 	}
 	else if (currentSetupState === SetupState.UploadedZip)
 	{
-		clientConnection.exec('rm -rf /root/tempsetupfiles && mkdir /root/tempsetupfiles && mv /tmp/setupFiles.tar.xz /root/tempsetupfiles && cd /root/tempsetupfiles && tar -xvf /root/tempsetupfiles/setupFiles.tar.xz', (err, stream) => {
+		clientConnection.exec('rm -rf /root/tempsetupfiles && rm -rf /tmp/tempsetupfiles && mkdir /tmp/tempsetupfiles && mkdir /root/tempsetupfiles && tar -xvf /tmp/setupFiles.tar.xz -C /tmp/tempsetupfiles && mv /tmp/tempsetupfiles/*.* /root/tempsetupfiles && mv /tmp/tempsetupfiles/syncthing /root/tempsetupfiles', (err, stream) => {
 		    if (err) {
 			console.log('SSH - Connection Error: ' + err);
 		  	currentSetupState = SetupState.ConnectionError;
@@ -325,7 +334,14 @@ function handleClientSetup() {
 			mainWindow.webContents.send('async-status','Connected after omega reboot, running second setup script...');
 			mainWindow.webContents.send('async-progress', 70);
 			// run second shell script
-			clientConnection.exec('touch /root/containerPassword.txt && printf ' + encPassword + ' > /root/containerPassword.txt && python3 /root/tempsetupfiles/setupkey_pt2.py', (err, stream) => {
+
+			var syncthingOption = '';
+
+			if (installSyncthing === true) {
+				syncthingOption = '-s';
+			}
+
+			clientConnection.exec('touch /root/containerPassword.txt && printf ' + encPassword + ' > /root/containerPassword.txt && python3 /root/tempsetupfiles/setupkey_pt2.py ' + syncthingOption, (err, stream) => {
 			    if (err) {
 				console.log('SSH - Connection Error: ' + err);
 		  		currentSetupState = SetupState.ConnectionError;

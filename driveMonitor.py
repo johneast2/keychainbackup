@@ -11,7 +11,7 @@ import onionGpio3
 passwordFile = "/root/containerPassword.txt"
 containerFile = "/mnt/sda1/container.bin"
 
-syncthingCommand = "/root/syncthing --gui-address=0.0.0.0:8384 &"
+syncthingCommand = "/root/syncthing --gui-address=0.0.0.0:8384 > /dev/null 2>&1 &"
 
 containerMountTimeLimitSeconds = 60
 
@@ -136,7 +136,7 @@ def main():
                     procs = subprocess.run(['ps'], stdout=subprocess.PIPE, universal_newlines=True)
                     if "syncthing" not in procs.stdout:
                         # syncthing bin is there but not running start it up
-                        process = subprocess.run(syncthingCommand, shell=True)
+                        subprocess.run(syncthingCommand, shell=True)
 
             if currentDriveState == DriveState.NO_CONTAINER and mountWaitTimerSeconds > containerMountTimeLimitSeconds:
                 gpio18Red.setOutputDirection(1)
