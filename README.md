@@ -60,7 +60,7 @@ Another idea I had was to alternate USB flash drives. That would allow backups t
  ![Omega2p ssh password](pictures/omega2p_ssh_password.png)
  6. Set the password that will be used for the encrypted storage container.
  ![Omega IP address spot](pictures/omega2p_encryptedpassword.png)
- 7. If you want to use syncghing, click advanced, then make sure Install Syncthing checkbox is checked.
+ 7. If you want to use Syncthing, click advanced, then make sure Install Syncthing checkbox is checked.
  8. Click setup device.
  9. You will need to click the warning button about all files being deleted from the USB drive.
  10. Once setup finishes, the encrypted storage container will be mounted at /tmp/container on the Omega2+.
