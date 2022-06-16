@@ -46,8 +46,17 @@ Drill with 1/4" drill bit (for the drywall holder screw holes)
 USB Drive formatted with EXT4 for backing up to.
 
 1. Place the Raspberry Pi in the case and screw it in with the 4x m2.5 screws.
+
+![installing into case](pictures/install_raspberry_pi.jpg)
+
 2. Screw in the cup hooks to the bottom of the case.
+
+![install hooks](pictures/insert_hook_pi.jpg)
+
 3. Using the case as a guide, drill out 1/4" holes and mount the case with the 2x #8 screws.
+
+![mounted on wall](pictures/pi_mounted.jpg)
+
 4. Plug in the power stuff for the Raspberry Pi and let it turn on.
 5. Plug in your USB drive.
 
