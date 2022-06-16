@@ -19,8 +19,63 @@ Another idea I had was to alternate USB flash drives. That would allow backups t
 
 ![Alternating backups](pictures/alternating_backups.png)
 
+## Getting Started
 
-## Hardware setup
+### Raspberry Pi Version
+
+JUN 16 2022 - Still a work in progress. These steps should work to get you setup but there may be bugs! John
+
+### Hardware Setup
+
+Items needed:
+
+1x printed out case
+
+4x m2.5 5mm screws (for mounting the raspberry pi in the case)
+
+3x cup hooks (I used 1.25" Hillman Cup hooks)
+
+2x #8 2.5" screws (for mounting on the wall)
+
+2x drywall screw holders (also for mounting on the wall)
+
+Drill with 1/4" drill bit (for the drywall holder screw holes)
+
+1x Raspberry Pi, setup to connect to your wifi + its power stuff
+
+USB Drive formatted with EXT4 for backing up to.
+
+1. Place the Raspberry Pi in the case and screw it in with the 4x m2.5 screws.
+2. Screw in the cup hooks to the bottom of the case.
+3. Using the case as a guide, drill out 1/4" holes and mount the case with the 2x #8 screws.
+4. Plug in the power stuff for the Raspberry Pi and let it turn on.
+5. Plug in your USB drive.
+
+
+### Software Setup
+
+**PLEASE NOTE: This will delete all data on your USB drive!**
+
+1. Remote into the Raspberry Pi using SSH and install cryptsetup: ```sudo apt update``` and ```sudo apt install cryptsetup```
+2. Find the device name for your USB drive, run ```mount``` and make note of the ```/dev/sdX``` that represents your USB drive.
+3. Run fdisk on that device: ```fdisk /dev/sdX```
+4. Delete everything on there: type ```d``` enter then ```n``` enter, and accept all the defaults. Then type ```w``` and press enter.
+5. Then setup encryption on that partition, run ```cryptsetup luksFormat /dev/sdX1```, accept the warning by typing in an upppercase ```YES``` and press enter.
+6. Enter a password for this encrypted partition, don't forget it!
+7. Once that finishes, make a directory to mount the encrypted device at: ```sudo mkdir /mnt/container```
+8. create a key to mount the container on boot: ```sudo dd if=/dev/random bs=32 count=1 of=/root/lukskey```
+9. Add that key to your encrypted container: ```sudo cryptsetup luksAddKey /dev/sdX1 /root/lukskey```. Enter the container password you setup.
+10. Get the UUID for your encrypted parition, run ```sudo blkid``` and find the UUID associated with your encrypted container, you'll need this to setup crypttab.
+11. Edit your ```/etc/crypttab``` file with your favorite editor and add this: ```container UUID=<uuid from previous step> /root/lukskey luks```, save and exit
+12. Edit your ```/etc/fstab``` file with your favorite editor and add this: ```/dev/mapper/container   /mnt/container  ext4    defaults,nofail,x-systemd.automount 0 0```, save and exit
+13. Reboot and verify that the USB drive is automatically mounted on ```/mnt/container```
+
+At this point the Raspberry Pi is setup to automatically mount the encrypted USB device when it is plugged in. Next setup your backup software to backup to the USB device. A howto will be coming shortly!
+
+
+### Omega2+ version
+
+### Hardware setup
 
 ### Items needed: Phillips screwdriver, 1/4" drill bit, drill, anti static wrist strap, and an Omega2+.
  1. Place the circuit board on the case and screw in the 4 m3 screws.
