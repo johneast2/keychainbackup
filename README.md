@@ -29,7 +29,7 @@ JUN 16 2022 - Still a work in progress. These steps should work to get you setup
 
 Items needed:
 
-1x printed out case
+1x printed out case - get it [here](case/raspberry_pi_case.stl)
 
 4x m2.5 5mm screws (for mounting the raspberry pi in the case)
 
