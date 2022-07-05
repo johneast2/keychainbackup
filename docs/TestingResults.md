@@ -9,10 +9,14 @@ I made a test system using a nodeMCU and an a relay. The nodeMCU controls the re
 I hacked up a USB extension cable and put the relay between the + voltage line. That way I can control the power to the USB drive 
 and mimic an unexpected removal. 
 
+![relay on power line](../pictures/relay_on_powerline.jpg)
+
 I wrote a simple program that checks if the keychain backup device is on, then powers on the USB 
 drive and makes sure the encrypted volume mounts successfully. It then starts an rsync backup to the device and waits a few minutes.
 Finally it sends a command over the network to the nodeMCU to power off the USB drive. Then repeat over and over, until the 
 USB drive is corrupted.
+
+![raspberry pi getting tested](../pictures/interrupt_pi.jpg)
 
 # Results
 
