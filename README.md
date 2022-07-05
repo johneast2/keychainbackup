@@ -19,6 +19,12 @@ Another idea I had was to alternate USB flash drives. That would allow backups t
 
 ![Alternating backups](pictures/alternating_backups.png)
 
+## Questions and Answers
+
+Q: Since I can't do "Safely Remove USB" on my USB drive, won't the filesystem on my USB drive get ruined?
+
+A: It is designed to use the ext4 filesystem, which is a very resisilent. To prove that, I created a test system to mimic unexpectedly removing the USB Drive. It tested 500+ removals and had no failures! You can read about it [here.](docs/TestingResults.md)
+
 ## Getting Started
 
 ### Raspberry Pi Version
