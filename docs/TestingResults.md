@@ -9,6 +9,8 @@ I made a test system using a nodeMCU and an a relay. The nodeMCU controls the re
 I hacked up a USB extension cable and put the relay between the + voltage line. That way I can control the power to the USB drive 
 and mimic an unexpected removal. 
 
+![schematic](../pictures/schematic_stress_testing.png)
+
 ![relay on power line](../pictures/relay_on_powerline.jpg)
 
 I wrote a simple program that checks if the keychain backup device is on, then powers on the USB 
